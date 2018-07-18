@@ -3,6 +3,8 @@ library(readxl)
 library(tidycensus)
 library(broom)
 
+theme_set(theme_minimal(base_size = 14))
+
 states <- data_frame(
   state = state.name,
   state_abbr = state.abb
@@ -265,7 +267,8 @@ lm_eq <-
   degu +
   pmar +
   pdiv +
-  yrcat +      ## year, as a categorical value
+  year +       ## year, as an integer value
+  # yrcat +      ## year, as a categorical value
   state +
   state:year   ## state specific linear trend
 
@@ -284,9 +287,13 @@ plot(fit)
 
 shapiro.test(fit$residuals)
 
+ggplot(fit, aes(sample = .resid)) +
+  geom_qq() +
+  stat_qq_line()
+
 set.seed(1)
 
-data_frame(res = fit$residuals, sim = rnorm(length(fit$residuals), 0, 2.5)) %>%
+data_frame(res = fit$residuals, sim = rnorm(length(fit$residuals), 0, 1)) %>%
   gather(var, val) %>%
   ggplot(aes(x = val, fill = var)) +
   geom_density(alpha = .8)
