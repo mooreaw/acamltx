@@ -17,7 +17,7 @@ states <- add_row(states, state = "District of Columbia", state_abbr = "DC")
 ### dependent variable
 
 # https://cwoutcomes.acf.hhs.gov/cwodatasite/childrenReports/index
-rts <- dir("C:/Users/andwilmo/Downloads/", pattern = "Child Welfare Outcomes Report", full.names = TRUE) %>%
+rts <- dir("data/", pattern = "Child Welfare Outcomes Report", full.names = TRUE) %>%
   map_df(~read_csv(., col_types = "cccc")) %>%
   set_names(c("state", "year", "cps_n", "cps_rate")) %>%
   arrange(year, state) %>%
@@ -27,7 +27,7 @@ rts <- dir("C:/Users/andwilmo/Downloads/", pattern = "Child Welfare Outcomes Rep
 
 # https://www.kff.org/health-reform/state-indicator/state-decisions-for-creating-health-insurance-exchanges-and-expanding-medicaid/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D
 aca <- read_csv(
-  "C:/Users/andwilmo/Downloads/raw_data.csv",
+  "data/kff-mce.csv",
   skip = 3,
   col_names = c("state", "marketplace", "status", "footnotes"),
   col_types = "cccc"
@@ -36,7 +36,7 @@ aca <- read_csv(
 ### controls: welfare characteristics
 
 # http://www.ukcpr.org/data
-ukcpr <- read_excel("C:/Users/andwilmo/Downloads/UKCPR_National_Welfare_Data_Final_Update_20180116_0.xlsx", sheet = "Data")
+ukcpr <- read_excel("data/UKCPR_National_Welfare_Data_Final_Update_20180116_0.xlsx", sheet = "Data")
 
 welfr <- ukcpr %>%
   filter(year %in% 2012:2016) %>%
@@ -182,7 +182,7 @@ mar <- marq %>%
 ### controls: child population size
 
 # https://datacenter.kidscount.org/data/tables/99-total-population-by-child-and-adult#detailed/2/2-53/false/870,573,869,36,868/39,40,41/416,417
-chpop <- read_excel("C:/Users/andwilmo/Downloads/Total population by child and adult populations.xlsx")
+chpop <- read_excel("data/Total population by child and adult populations.xlsx")
 
 chpop <- chpop %>%
   filter(DataFormat == "Percent", TimeFrame %in% 2012:2016) %>%
@@ -297,4 +297,3 @@ data_frame(res = fit$residuals, sim = rnorm(length(fit$residuals), 0, 1)) %>%
   gather(var, val) %>%
   ggplot(aes(x = val, fill = var)) +
   geom_density(alpha = .8)
-
